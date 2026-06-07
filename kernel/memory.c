@@ -73,15 +73,37 @@ void *kmalloc(uint64_t size)
     return 0;
 }
 
-/* Liberacao basica: a coalescencia fica para a proxima etapa. */
-
+/* Liberacao com coalescencia de blocos adjacentes */
 void kfree(void *ptr)
 {
     if (!ptr)
         return;
 
+    /* 1. Recupera o cabeçalho do bloco e marca como livre */
     block_t *block = ((block_t *)ptr) - 1;
     block->free = 1;
+
+    /* 2. Coalescência: varre a lista para juntar blocos livres adjacentes */
+    block_t *current = free_list;
+    
+    while (current && current->next)
+    {
+        /* Se o bloco atual E o próximo bloco estiverem livres, junta */
+        if (current->free && current->next->free)
+        {
+            /* O novo tamanho útil é o tamanho do bloco atual, mais o tamanho do cabeçalho do próximo bloco (que agora vira área útil), 
+            mais o tamanho do próximo bloco. */
+            current->size += sizeof(block_t) + current->next->size;
+
+            /* O bloco atual passa a apontar para o vizinho do próximo, engolindo ele */
+            current->next = current->next->next;
+        }
+        else
+        {
+            /* Só avançamos para o próximo bloco se não houve fusão */
+            current = current->next;
+        }
+    }
 }
 
 /* Estatisticas */
