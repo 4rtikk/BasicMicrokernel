@@ -27,7 +27,7 @@ void kernel_main()
     memory_init();
 
     uart_print("\n=== Teste do Gerenciador de Memoria ===\n");
-    
+
     uart_print("Heap total: ");
     uart_print_uint(memory_total());
     uart_print(" bytes\n");
@@ -48,12 +48,22 @@ void kernel_main()
     uart_print_uint(memory_free());
     uart_print(" bytes\n");
 
-    /* 3. Remoção de tasks (Liberação e Coalescência) */
-    /* O índice 0 corresponde a primeira task criada */
+    /* 3. Remoção da Task 1 */
     xTaskDelete(0);
-    uart_print("Task 1 removida\n");
+    uart_print("\nTask 1 removida\n");
 
-    /* Mostra o uso após a liberação (deve refletir a memória devolvida) */
+    uart_print("Heap usado: ");
+    uart_print_uint(memory_used());
+    uart_print(" bytes\n");
+
+    uart_print("Heap livre: ");
+    uart_print_uint(memory_free());
+    uart_print(" bytes\n");
+
+    /* 4. Remoção da Task 2 */
+    xTaskDelete(1);
+    uart_print("\nTask 2 removida\n");
+
     uart_print("Heap usado: ");
     uart_print_uint(memory_used());
     uart_print(" bytes\n");
