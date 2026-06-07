@@ -64,8 +64,5 @@ void kernel_main()
 
     uart_print("=======================================\n");
 
-    /* Pode iniciar o scheduler apenas com a task 2 restante, ou travar em loop infinito */
-    //*scheduler_start();
-
-    while (1);
+    scheduler_start();
 }
