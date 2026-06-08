@@ -72,6 +72,14 @@ void kernel_main()
     uart_print_uint(memory_free());
     uart_print(" bytes\n");
 
+    uart_print("\n--- Prova de Reutilizacao ---\n");
+    xTaskCreate(task1, 2048, 1);
+    uart_print("Task 1 recriada usando a memoria reciclada!\n");
+    
+    uart_print("Heap usado: ");
+    uart_print_uint(memory_used());
+    uart_print(" bytes\n");
+
     uart_print("=======================================\n");
 
     scheduler_start();
